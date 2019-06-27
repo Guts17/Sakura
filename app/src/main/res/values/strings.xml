@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Sakura</string>
+    <string name="toolbar_name">樱花动漫</string>
+    <string name="base_url">http://www.imomoe.io</string>
+    <string name="toolbar_search">搜寻</string>
+    <string name="tab_home">首页</string>
+    <string name="tab_allvideos">所有动画</string>
+    <string name="tab_history">观看记录</string>
+    <string name="tab_mine">我的</string>
+    <string name="video_alias">别名</string>
+    <string name="video_index">索引</string>
+    <string name="video_region">地区</string>
+    <string name="video_type">类型</string>
+    <string name="video_tag">标签</string>
+    <string name="video_years">年份</string>
+    <string name="net_error">网络请求出错</string>
+    <string name="search_text">『%1$s』 的搜索结果</string>
+    <string name="episode_text">第%1$d集</string>
+</resources>

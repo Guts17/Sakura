@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorBase">#6495ED</color>
+    <color name="gray">#999</color>
+    <color name="light_gray">#ccc</color>
+    <color name="divider_gray">#e5e5e5</color>
+    <color name="score_color">#f98933</color>
+</resources>

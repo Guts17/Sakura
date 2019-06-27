@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_tab_home"
+        android:icon="@drawable/ic_home_white"
+        android:title="@string/tab_home"/>
+    <!--<item-->
+        <!--android:id="@+id/menu_tab_search"-->
+        <!--android:icon="@drawable/ic_live_tv_white_24dp"-->
+        <!--android:title="@string/tab_search"/>-->
+    <item
+        android:id="@+id/menu_tab_allvideos"
+        android:icon="@drawable/ic_live_tv_white_24dp"
+        android:title="@string/tab_allvideos"/>
+    <item
+        android:id="@+id/menu_tab_history"
+        android:icon="@drawable/ic_history_white_24dp"
+        android:title="@string/tab_history"/>
+    <item
+        android:id="@+id/menu_tab_mine"
+        android:icon="@drawable/ic_favorite_white_24dp"
+        android:title="@string/tab_mine"/>
+</menu>
