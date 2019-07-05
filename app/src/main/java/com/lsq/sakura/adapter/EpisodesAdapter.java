@@ -62,7 +62,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.ViewHo
     }
 
     public interface OnItemClickCallBack{
-        public void playVideo(int position);
+        void playVideo(int position);
     }
 
 }

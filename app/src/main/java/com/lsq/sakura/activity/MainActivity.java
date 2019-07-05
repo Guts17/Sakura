@@ -14,7 +14,14 @@ import android.widget.Toast;
 
 import com.lsq.sakura.R;
 import com.lsq.sakura.base.BaseActivity;
+import com.lsq.sakura.fragment.AllVideosFragment;
+import com.lsq.sakura.fragment.HistoryFragment;
+import com.lsq.sakura.fragment.HomeFragment;
+import com.lsq.sakura.fragment.MineFragment;
 import com.lsq.sakura.utils.FragmentsGenerator;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +48,7 @@ public class MainActivity extends BaseActivity {
 
     void initView(){
         ButterKnife.bind(this);
-        Toolbar toolbar = findViewById(R.id.toolbar_main);
+        final Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -51,16 +58,26 @@ public class MainActivity extends BaseActivity {
                         if(et_search.getVisibility() == View.GONE){
                             tv_search.setVisibility(View.GONE);
                             et_search.setVisibility(View.VISIBLE);
-                            et_search.setFocusable(true);
-                            et_search.setFocusableInTouchMode(true);
-                            et_search.requestFocus();
+//                            et_search.setFocusable(true);
+//                            et_search.setFocusableInTouchMode(true);
+//                            et_search.requestFocus();
                         }else {
                             et_search.setVisibility(View.GONE);
                             tv_search.setText(getString(R.string.search_text,et_search.getText().toString()));
                             tv_search.setVisibility(View.VISIBLE);
+                            Bundle bundle = new Bundle();
+                            try {
+                                bundle.putString("SearchUrl",getString(R.string.search_url) + URLEncoder.encode(et_search.getText().toString(),"gb2312"));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            mFragments[1].setArguments(bundle);
+                            bottomNavigationView.setSelectedItemId(R.id.menu_tab_allvideos);
+                            onTabItemSelected(R.id.menu_tab_allvideos);
                         }
                         break;
                 }
+
                 return true;
             }
         });
@@ -74,6 +91,16 @@ public class MainActivity extends BaseActivity {
             }
         });
         onTabItemSelected(R.id.menu_tab_home);
+    }
+
+    private Fragment[] getFragments(){
+        Fragment[] fragments = new Fragment[4];
+        fragments[0] = new HomeFragment();
+        fragments[1] = new AllVideosFragment();
+        fragments[2] = new HistoryFragment();
+        fragments[3] = new MineFragment();
+
+        return null;
     }
 
     private void onTabItemSelected(int id){

@@ -16,4 +16,5 @@
     <string name="net_error">网络请求出错</string>
     <string name="search_text">『%1$s』 的搜索结果</string>
     <string name="episode_text">第%1$d集</string>
+    <string name="search_url">http://www.imomoe.io/search.asp?searchword=</string>
 </resources>

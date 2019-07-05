@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.lsq.sakura.R;
 import com.lsq.sakura.adapter.VideosAdapter;
 import com.lsq.sakura.base.BaseFragment;
+import com.lsq.sakura.base.FragmentCallBack;
 import com.lsq.sakura.bean.EventCode;
 import com.lsq.sakura.bean.EventMessage;
 import com.lsq.sakura.bean.VideoInfo;
@@ -32,12 +33,12 @@ public class AllVideosFragment extends BaseFragment {
     private List<VideoInfo> mVideoList = new ArrayList<>();
     private VideosAdapter videosAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private AllVideosCallBack mCallBack;
 
-
-    public static AllVideosFragment newInstance(String searchUrl){
+    public static AllVideosFragment newInstance(AllVideosCallBack callBack) {
         AllVideosFragment fragment = new AllVideosFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("SearchUrl",searchUrl);
+//        bundle.putParcelable("CallBack",callBack);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -45,19 +46,14 @@ public class AllVideosFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
-//            mSearchUrl = getArguments().getString("SearchUrl","");
-        }
     }
-
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_allvideos, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.rv_videos);
+        RecyclerView recyclerView = view.findViewById(R.id.rv_allvideos);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         videosAdapter = new VideosAdapter(mVideoList);
@@ -68,44 +64,52 @@ public class AllVideosFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshVideos();
+                refreshVideos(getString(R.string.base_url));
             }
         });
-        refreshVideos();
+        if (getArguments() != null) {
+            mSearchUrl = getArguments().getString("SearchUrl", "");
+            refreshVideos(mSearchUrl);
+        }else {
+            refreshVideos(getString(R.string.base_url));
+        }
 
         return view;
 
     }
 
-    public void refreshVideos() {
+    public void refreshVideos(final String url) {
         mVideoList.clear();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Document doc = Jsoup.connect(getString(R.string.base_url)).get();
-                    Elements elements = doc.getElementsByClass("imgs");
-                    for (Element element : elements) {
-                        Elements liElements = element.getElementsByTag("li");
-                        for (Element li : liElements) {
-                            Element a = li.select("a").first();
-                            Element img = li.select("img").first();
-                            Element p = li.select("p").last();
-                            VideoInfo videoInfo = new VideoInfo();
-                            videoInfo.setTitle(img.attr("alt"));
-                            videoInfo.setPoster_url(img.attr("src"));
-                            videoInfo.setVideo_url(getString(R.string.base_url) + a.attr("href"));
-                            videoInfo.setDesc(p.text());
-                            mVideoList.add(videoInfo);
-                        }
+                    Document doc = Jsoup.connect(url).get();
+                    Element element = doc.getElementsByClass("pics").first();
+                    Elements liElements = element.getElementsByTag("li");
+                    for (Element li : liElements) {
+                        Element a = li.select("a").first();
+                        Element img = li.select("img").first();
+                        Element p = li.select("p").last();
+                        VideoInfo videoInfo = new VideoInfo();
+                        videoInfo.setTitle(img.attr("alt"));
+                        videoInfo.setPoster_url(img.attr("src"));
+                        videoInfo.setVideo_url(getString(R.string.base_url) + a.attr("href"));
+                        videoInfo.setDesc(p.text());
+                        mVideoList.add(videoInfo);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                EventBusUtils.postEvent(new EventMessage(EventCode.EVENT_ALLVIDEOS_GETVIDEOS_COMPLETED,"completed"));
+                EventBusUtils.postEvent(new EventMessage(EventCode.EVENT_ALLVIDEOS_GETVIDEOS_COMPLETED, "completed"));
             }
         }).start();
 
+    }
+
+
+    public interface AllVideosCallBack extends FragmentCallBack {
+        void getSearchVideos(String searchUrl);
     }
 
     @Override
@@ -116,9 +120,15 @@ public class AllVideosFragment extends BaseFragment {
     @Override
     public void onReceiveEvent(EventMessage eventMessage) {
         super.onReceiveEvent(eventMessage);
-        switch (eventMessage.getCode()){
+        switch (eventMessage.getCode()) {
             case EventCode.EVENT_ALLVIDEOS_GETVIDEOS_COMPLETED:
+                videosAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
                 break;
         }
+    }
+
+    public void setmSearchUrl(String mSearchUrl) {
+        this.mSearchUrl = mSearchUrl;
     }
 }

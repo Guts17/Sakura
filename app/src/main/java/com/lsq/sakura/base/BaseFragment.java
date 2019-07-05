@@ -51,4 +51,5 @@ public class BaseFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onReceiveStickyEvent(EventMessage eventMessage){
     }
+
 }
